@@ -15,18 +15,28 @@ const phoneRegExp =
   /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/;
 
 const schema = yup.object().shape({
-  name: yup.string().matches(nameRegExp, 'Name is not valid').required(),
+  name: yup
+    .string()
+    .min(2)
+    .max(20)
+    .matches(nameRegExp, 'Name is not valid')
+    .required(),
   number: yup.string().matches(phoneRegExp, 'Number is not valid').required(),
 });
 
 const initialValues = { name: '', number: '' };
 
 export const ContactForm = ({ handleFormSubmit }) => {
+  const onSubmit = (values, { resetForm }) => {
+    handleFormSubmit({ ...values });
+    resetForm();
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={handleFormSubmit}
+      onSubmit={onSubmit}
     >
       <ContForm>
         <Label>
@@ -34,7 +44,7 @@ export const ContactForm = ({ handleFormSubmit }) => {
           <ContInput type="text" name="name" placeholder="Rosie Simpson" />
           <ErrorMessage
             name="name"
-            render={msg => <ErrMessageText> {msg} </ErrMessageText>}
+            render={(msg) => <ErrMessageText> {msg} </ErrMessageText>}
           />
         </Label>
         <Label>
@@ -42,7 +52,7 @@ export const ContactForm = ({ handleFormSubmit }) => {
           <ContInput type="tel" name="number" placeholder="+380-00-000-00-00" />
           <ErrorMessage
             name="number"
-            render={msg => <ErrMessageText> {msg} </ErrMessageText>}
+            render={(msg) => <ErrMessageText> {msg} </ErrMessageText>}
           />
         </Label>
         <Button type="submit">Add contact</Button>
