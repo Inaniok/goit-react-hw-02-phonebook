@@ -12,20 +12,21 @@ export class App extends Component {
     filter: '',
   };
 
-  handleFormSubmit = (values, { resetForm }) => {
-    const contact = { id: nanoid(), ...values };
-
-    const isAdded = this.checkContactIsAdded(contact);
+  handleFormSubmit = (newContacts) => {
+    
+    const isAdded = this.checkContactIsAdded(newContacts);
 
     if (isAdded) {
-      return alert(`${contact.name} is already in contacts`);
+      return alert(`${newContacts.name} is already in contacts`);
     }
+
+    const contact = { id: nanoid(), ...newContacts };
 
     this.setState(prevState => ({
       contacts: [contact, ...prevState.contacts],
     }));
 
-    resetForm();
+    // resetForm();
   };
 
   handleRemoveContact = ContactId => {
@@ -52,7 +53,7 @@ export class App extends Component {
     const { contacts } = this.state;
     const normalizedContactName = name.toLowerCase();
 
-    return contacts.find(
+    return contacts.some(
       ({ name }) => name.toLowerCase() === normalizedContactName
     );
   };
